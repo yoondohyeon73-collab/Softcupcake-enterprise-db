@@ -1,0 +1,6 @@
+{
+    "db_name": "test",
+    "server_port": 80,
+    "version": "1.0",
+    "is_beta": false
+}
