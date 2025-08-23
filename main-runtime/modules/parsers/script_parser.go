@@ -57,7 +57,7 @@ func Parsing_script(input string, tokens *[]SC_token) int {
 		}
 
 		c := input[i]
-
+		var prev string
 		// 특수문자 처리
 		switch c {
 		case ',':
@@ -77,11 +77,19 @@ func Parsing_script(input string, tokens *[]SC_token) int {
 			i++
 			continue
 		case '"':
-			// 큰따옴표 문자열 처리 (종료 큰따옴표 나올때까지)
 			i++
 			start := i
-			for i < n && input[i] != '"' {
-				// 이스케이프 처리 필요시 구현 가능 (현재 미구현)
+			escaped := false
+			for i < n {
+				if input[i] == '\\' && !escaped {
+					escaped = true
+					i++
+					continue
+				}
+				if input[i] == '"' && !escaped {
+					break // 종료 큰따옴표 발견
+				}
+				escaped = false
 				i++
 			}
 			if i >= n {
@@ -91,7 +99,6 @@ func Parsing_script(input string, tokens *[]SC_token) int {
 			*tokens = append(*tokens, SC_token{Token: strVal, Token_type: SC_columnText})
 			i++ // 종료 큰따옴표 넘김
 			continue
-		}
 
 		// 알파벳 혹은 _ 로 시작하는 식별자, 키워드, 테이블명, 열이름 등
 		if isIdentStart(c) {
@@ -156,8 +163,9 @@ func Parsing_script(input string, tokens *[]SC_token) int {
 
 		// 알 수 없는 문자 발견 시 에러
 		return 1
-	}
 
+		prev = c
+	}
 	return 0
 }
 
