@@ -205,34 +205,3 @@ func isIdentStart(c byte) bool {
 func isIdentPart(c byte) bool {
 	return isIdentStart(c) || (c >= '0' && c <= '9')
 }
-	if len(tokens) == 0 {
-		*error_stream = "Empty token list\n<none>"
-		return 1
-	}
-
-	pos := 0
-	cmd := tokens[pos]
-	pos++
-
-	tokenOrNone := func(pos int) string {
-		if pos >= len(tokens) {
-			return "<none>"
-		}
-		tok := tokens[pos]
-		if str, ok := tok.Token.(string); ok {
-			return str
-		}
-		return "<non-string token>"
-	}
-
-	switch cmd.Token_type {
-	case SC_createTable:
-		// 테이블 이름 확인
-		if pos >= len(tokens) || tokens[pos].Token_type != SC_tableName {
-			*error_stream = "Missing or invalid table name\n" + tokenOrNone(pos)
-			return 1
-		}
-		pos++
-
-		// '(' 확인
-		if pos >= len(tokens) || tokens[pos].Token_type != SC_parenOpen {
